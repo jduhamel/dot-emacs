@@ -1,6 +1,12 @@
 #+STARTUP: overview 
 #+PROPERTY: header-args :comments yes :results silent
 * Packages to add or look into
+- Page break lines [[https://github.com/purcell/page-break-lines][Page Break Lines]]
+- bookmarks+ 
+- dashboard [[https://github.com/emacs-dashboard][Emacs Dashboard]](use-package dashboard
+  :ensure t
+  :config
+  (dashboard-setup-startup-hook))
 - moom
 - telephone-line
 - org-download
@@ -31,7 +37,6 @@
 (add-to-list 'package-archives '("org" . "https://orgmode.org/elpa/") t)
 #+END_SRC
 
-
 * interface tweaks
   #+BEGIN_SRC emacs-lisp
     (setq inhibit-startup-message t)
@@ -51,13 +56,14 @@
     (use-package alect-themes :ensure t)
     (use-package tao-theme :ensure t)
     (use-package poet-theme :ensure t)
-(use-package modus-operandi-theme :ensure t)
-(use-package modus-vivendi-theme :ensure t)
+    (use-package modus-operandi-theme :ensure t)
+    (use-package modus-vivendi-theme :ensure t)
+    (use-package night-owl-theme :ensure t)
 
     (use-package faff-theme
       :ensure t
       )
-
+(use-package all-the-icons)
 (use-package color-theme-modern :ensure t)
 
     (load-theme 'modus-operandi t)
@@ -82,7 +88,7 @@
       (global-hungry-delete-mode))
 
     (global-auto-revert-mode 1) ;; you might not want this
-    (setq auto-revert-verbose nil) ;; or this
+    (setq auto-revert-verbose t) ;; or this
     (global-set-key (kbd "<f5>") 'revert-buffer)
 
     (use-package aggressive-indent
@@ -131,12 +137,12 @@
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp 
+
 (use-package hlinum
 :ensure t
 :config
 (hlinum-activate)
 (global-linum-mode)
-
 )
 #+END_SRC
 * Swiper / Ivy / Counsel
@@ -150,7 +156,7 @@
    (use-package counsel
 :ensure t
   :bind
-  (("M-y" . counsel-yank-pop)
+  (("M-Y" . counsel-yank-pop)
    :map ivy-minibuffer-map
    ("M-y" . ivy-next-line)))
 
@@ -187,41 +193,42 @@
 * IBUFFER
 #+BEGIN_SRC emacs-lisp 
 
-  (global-set-key (kbd "C-x C-b") 'ibuffer)
-  (setq ibuffer-saved-filter-groups
-        (quote (("default"
-                 ("dired" (mode . dired-mode))
-                 ("org" (name . "^.*org$"))
-                 ("magit" (mode . magit-mode))
-                 ("IRC" (or (mode . circe-channel-mode) (mode . circe-server-mode)))
-                 ("web" (or (mode . web-mode) (mode . js2-mode)))
-                 ("shell" (or (mode . eshell-mode) (mode . shell-mode)))
-                 ("mu4e" (or
+(global-set-key (kbd "C-x C-b") 'ibuffer)
+(setq ibuffer-saved-filter-groups
+      (quote (("default"
+	       ("dired" (mode . dired-mode))
+	       ("org" (name . "^.*org$"))
+	       ("magit" (mode . magit-mode))
+	       ("IRC" (or (mode . circe-channel-mode) (mode . circe-server-mode)))
+	       ("web" (or (mode . web-mode) (mode . js2-mode)))
+	       ("shell" (or (mode . eshell-mode) (mode . shell-mode)))
+	       ("mu4e" (or
+			(mode . mu4e-compose-mode)
+			(name . "\*mu4e\*")
+			))
+	       ("programming" (or
+			       (mode . clojure-mode)
+			       (mode . go-mode)
+			       (mode . clojurescript-mode)
+			       (mode . python-mode)
+			       (mode . c++-mode)))
+	       ("emacs" (or
+			 (name . "^\\*scratch\\*$")
+			 (name . "^\\*Messages\\*$")))
+	       ))))
+(add-hook 'ibuffer-mode-hook
+	  (lambda ()
+	    (ibuffer-auto-mode 1)
+	    (ibuffer-switch-to-saved-filter-groups "default")))
 
-                          (mode . mu4e-compose-mode)
-                          (name . "\*mu4e\*")
-                          ))
-                 ("programming" (or
-                                 (mode . clojure-mode)
-                                 (mode . clojurescript-mode)
-                                 (mode . python-mode)
-                                 (mode . c++-mode)))
-                 ("emacs" (or
-                           (name . "^\\*scratch\\*$")
-                           (name . "^\\*Messages\\*$")))
-                 ))))
-  (add-hook 'ibuffer-mode-hook
-            (lambda ()
-              (ibuffer-auto-mode 1)
-              (ibuffer-switch-to-saved-filter-groups "default")))
+;; don't show these
+					;(add-to-list 'ibuffer-never-show-predicates "zowie")
 
-  ;; don't show these
-                                          ;(add-to-list 'ibuffer-never-show-predicates "zowie")
-  ;; Don't show filter groups if there are no buffers in that group
-  (setq ibuffer-show-empty-filter-groups nil)
+;; Don't show filter groups if there are no buffers in that group
+(setq ibuffer-show-empty-filter-groups nil)
 
-  ;; Don't ask for confirmation to delete marked buffers
-  (setq ibuffer-expert t)
+;; Don't ask for confirmation to delete marked buffers
+(setq ibuffer-expert t)
 
 #+END_SRC
 * Flycheck
@@ -233,13 +240,9 @@
 
   #+END_SRC
 
-
-
 * Hydra
 #+BEGIN_SRC emacs-lisp
-(use-package hydra
-:ensure t)
-
+(use-package hydra :ensure t)
 #+END_SRC
 * Folding - Origami
 #+BEGIN_SRC emacs-lisp
@@ -257,9 +260,6 @@
   ("p" origami-previous-fold)
   ("f" origami-forward-toggle-node)
   ("a" origami-toggle-all-nodes))
-
-
-
 
 #+END_SRC
 * Magit and git stuff
@@ -283,8 +283,6 @@
 :ensure t
 :config
 (global-git-gutter-mode))
-
-
 
 
 (use-package smerge-mode
@@ -643,7 +641,6 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
 
    #+END_SRC
 
-
 * Snippets
 #+BEGIN_SRC emacs-lisp
     (use-package yasnippet
@@ -700,9 +697,6 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
     (setq mode-line-format nil)))
 #+END_SRC
 
-
-
-
 * Projectile
 #+BEGIN_SRC emacs-lisp
 
@@ -746,29 +740,37 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
 (setq compnay-lsp-enable-snippet t)
  (push 'company-lsp company-backends)
 )
+
+;; Company go? 
 #+END_SRC
 
 * Python
 
 #+BEGIN_SRC emacs-lisp
-        (use-package virtualenvwrapper
-          :ensure t
-          :config
-          (venv-initialize-interactive-shells)
-          (venv-initialize-eshell))
+    (use-package conda
+    :ensure t
+    :init 
+    (setq conda-anaconda-home "/opt/anaconda3")
+    (setq conda-env-home-directory (expand-file-name "~/miniconda3")))
+
+    ;; (use-package virtualenvwrapper
+    ;; :ensure t
+    ;; :config
+    ;;           (venv-initialize-interactive-shells)
+    ;;           (venv-initialize-eshell))
  
-(venv-workon "p3")
-(setq lsp-python-executable-cmd "python3")
+  ;;  (venv-workon "p3")
+    (setq lsp-python-executable-cmd "python3")
 
-(use-package jedi
-:ensure t
-:init
-(add-hook 'python-mode-hook 'jedi:setup)
-(add-hook 'python-mode-hook 'jedi:ac-setup))
+    ;; (use-package jedi
+    ;; :ensure t
+    ;; :init
+    ;; (add-hook 'python-mode-hook 'jedi:setup)
+    ;; (add-hook 'python-mode-hook 'jedi:ac-setup))
 
 
-(setq python-shell-interpreter "python3"
-      python-shell-interpreter-args "-i")
+    ;; (setq python-shell-interpreter "python3"
+    ;;       python-shell-interpreter-args "-i")
 
 
 #+END_SRC
@@ -794,8 +796,6 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
 :ensure t
 :config
 (add-hook 'irony-mode-hook #'irony-eldoc))
-
-
 
 ;;(setq lsp-clangd-executable "clangd-6.0")
 ;;(setq lsp-clients-clangd-executable "clangd-6.0")
@@ -836,8 +836,6 @@ _p_rev       _u_pper              _=_: upper/lower       _r_esolve
 (dumb-jump-mode)
   :ensure
 )
-
-
 
 #+END_SRC
 * Origami folding

@@ -1,0 +1,18 @@
+* Keyboard keys in config.
+** C-= Expand Region
+** <f5> revert-buffer
+** "C-x O" Other frame
+** "C-x o" ace-window (**JSD** Look at this.)
+** "M-Y" counsel-yank-pop
+** "C-x b" ivy-switch-buffers
+** "C-s" swiper-isearch
+** "C-r" swiper-isearch (what did this replace?)
+** "C-c C-r" ivy-resume
+** "M-x" counsel-M-x
+** "C-x C-f" counsel-find-file
+** "C-r" (read-expression-map) counsel-expression-history
+** "C-x C-b" ibuffer
+
+#TODO: Read ivy-counsel docs. 
+
+#TODO: Read Hydra/Origami
